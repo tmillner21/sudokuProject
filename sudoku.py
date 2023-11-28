@@ -2,15 +2,15 @@ import pygame
 
 
 def draw_game_start(screen):
-    # Initialize title font
+    # Initialize fonts.
     start_title_font = pygame.font.Font(None, 80)
     subtext_font = pygame.font.Font(None, 40)
     button_font = pygame.font.Font(None, 60)
 
-    # Color background
+    # Color background.
     screen.fill(BG_COLOR)
 
-    # Initialize and draw title
+    # Initialize and draw title and subtext.
     title_surface = start_title_font.render("Welcome to Sudoku", 0, LINE_COLOR)
     title_rectangle = title_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 170))
     screen.blit(title_surface, title_rectangle)
@@ -51,6 +51,7 @@ def draw_game_start(screen):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Set removed cells based on user choice.
                 if easy_rectangle.collidepoint(event.pos):
                     print("easy")
                     removed_cells = 30
@@ -68,14 +69,12 @@ if __name__ == "__main__":
 
     pygame.init()
 
+    # Constants
     BG_COLOR = (255, 149, 203)
     LINE_COLOR = (255, 0, 128)
-
     WIDTH = 600
     HEIGHT = 600
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     draw_game_start(screen)
-
-    screen.fill(BG_COLOR)
