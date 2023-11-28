@@ -1,5 +1,4 @@
-from board import Board
-import pygame, sys
+import pygame
 
 
 def draw_game_start(screen):
@@ -49,7 +48,6 @@ def draw_game_start(screen):
     screen.blit(medium_surface, medium_rectangle)
     screen.blit(hard_surface, hard_rectangle)
 
-
     while True:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -63,6 +61,7 @@ def draw_game_start(screen):
                     print("hard")
                     removed_cells = 50
         pygame.display.update()
+
 
 if __name__ == "__main__":
     game_over = False
