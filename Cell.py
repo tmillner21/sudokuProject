@@ -7,6 +7,7 @@ class Cell:
         self.screen = screen
         self.sketched_value = 0
         self.selected = None
+
     def set_cell_value(self, value):
         self.value = value
 
@@ -14,7 +15,7 @@ class Cell:
         self.sketched_value = value
 
     def draw(self):
-        cell_size = 50
+        cell_size = 200/3
         x = self.col * cell_size
         y = self.row * cell_size
         if self.value != 0:

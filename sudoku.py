@@ -1,4 +1,7 @@
 import pygame
+import sys
+from constants import *
+from Board import Board
 
 
 def draw_game_start(screen):
@@ -55,26 +58,39 @@ def draw_game_start(screen):
                 if easy_rectangle.collidepoint(event.pos):
                     print("easy")
                     removed_cells = 30
+                    difficulty = "easy"
+                    return removed_cells, difficulty
                 elif medium_rectangle.collidepoint(event.pos):
                     print("med")
                     removed_cells = 40
+                    difficulty = "medium"
+                    return removed_cells, difficulty
                 elif hard_rectangle.collidepoint(event.pos):
                     print("hard")
                     removed_cells = 50
+                    difficulty = "hard"
+                    return removed_cells, difficulty
         pygame.display.update()
 
 
-if __name__ == "__main__":
+
+
+def main():
     game_over = False
 
     pygame.init()
 
-    # Constants
-    BG_COLOR = (255, 149, 203)
-    LINE_COLOR = (255, 0, 128)
-    WIDTH = 600
-    HEIGHT = 600
-
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    draw_game_start(screen)
+    removed_cells, difficulty = draw_game_start(screen)
+
+    draw_board = Board(WIDTH, HEIGHT, screen, removed_cells, difficulty)
+
+    screen.fill(BG_COLOR)
+
+    draw_board.draw()
+
+    draw_board.play_sudoku_board()
+
+if __name__ == "__main__":
+    main()
