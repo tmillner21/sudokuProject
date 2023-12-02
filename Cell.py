@@ -1,4 +1,6 @@
 import pygame
+from constants import *
+
 class Cell:
     def __init__(self, value, row, col, screen):
         self.value = value
@@ -6,7 +8,9 @@ class Cell:
         self.col = col
         self.screen = screen
         self.sketched_value = 0
-        self.selected = None
+        self.selected = False
+        self.cell_size = CELL_SIZE
+        self.rect = pygame.Rect(self.col * self.cell_size, self.row * self.cell_size, self.cell_size, self.cell_size)
 
     def set_cell_value(self, value):
         self.value = value
@@ -15,15 +19,15 @@ class Cell:
         self.sketched_value = value
 
     def draw(self):
-        cell_size = 200/3
-        x = self.col * cell_size
-        y = self.row * cell_size
-        if self.value != 0:
-            font = pygame.font.Font(None, 36)
-            text = font.render(str(self.value), True, (0, 0, 0))
-            text_rect = text.get_rect(center=(x + cell_size / 2, y + cell_size / 2))
-            self.screen.blit(text, text_rect)
-        else:
-            pygame.draw.rect(self.screen, (255, 255, 255), (x, y, cell_size, cell_size))
+        font = pygame.font.Font(None, 36)
+        text = font.render(str(self.value) if self.value != 0 else "", 1, (255, 255, 255))
+        textpos = text.get_rect(centerx=(self.col * CELL_SIZE) + CELL_SIZE // 2,
+                                centery=(self.row * CELL_SIZE) + CELL_SIZE // 2)
+
+        pygame.draw.rect(self.screen, BG_COLOR, (self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+
         if self.selected:
-            pygame.draw.rect(self.screen, (255, 0, 0), (x, y, cell_size, cell_size), 3)
+            pygame.draw.rect(self.screen, (0, 0, 255), (self.col * CELL_SIZE, self.row * CELL_SIZE, CELL_SIZE, CELL_SIZE), width=3)
+
+        self.screen.blit(text, textpos)
+

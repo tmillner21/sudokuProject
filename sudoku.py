@@ -5,6 +5,8 @@ from Board import Board
 
 
 def draw_game_start(screen):
+    pygame.display.set_caption("Play Sudoku")
+
     # Initialize fonts.
     start_title_font = pygame.font.Font(None, 80)
     subtext_font = pygame.font.Font(None, 40)
@@ -51,7 +53,9 @@ def draw_game_start(screen):
     screen.blit(medium_surface, medium_rectangle)
     screen.blit(hard_surface, hard_rectangle)
 
-    while True:
+    difficulty = None
+
+    while difficulty is None:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Set removed cells based on user choice.
@@ -73,24 +77,36 @@ def draw_game_start(screen):
         pygame.display.update()
 
 
-
-
 def main():
-    game_over = False
+    while True:
+        pygame.init()
 
-    pygame.init()
+        screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        removed_cells, difficulty = draw_game_start(screen)
 
-    removed_cells, difficulty = draw_game_start(screen)
+        draw_board = Board(WIDTH, HEIGHT, screen, removed_cells, difficulty)
 
-    draw_board = Board(WIDTH, HEIGHT, screen, removed_cells, difficulty)
+        selected_cell = None
 
-    screen.fill(BG_COLOR)
+        while True:
+            for event in pygame.event.get():
+                print(event)  # Add this line to check if any events are being registered
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = pygame.mouse.get_pos()
+                    draw_board.click(x, y)
 
-    draw_board.draw()
+            screen.fill(BG_COLOR)
+            bottom_button_input = draw_board.draw()
 
-    draw_board.play_sudoku_board()
+            if bottom_button_input == "restart":
+                break
+
+            pygame.display.update()
+
 
 if __name__ == "__main__":
     main()
