@@ -11,7 +11,11 @@ class Board:
         self.screen = screen
         self.removed_cells = removed_cells
         self.difficulty = difficulty
-
+        self.selected = None
+        self.cell_size = self.width // 9
+        self.board = [[0 for i in range(9)] for i in range(9)]
+        self.rows = len(self.board)
+        self.cols = len(self.board[0])
     def play_sudoku_board(self):
         self.sudoku_board = generate_sudoku(9, self.removed_cells)
         for i in range(0, 9):
@@ -39,31 +43,55 @@ class Board:
             pygame.display.update()
 
     def select(self, row, col):
-        pass
+        self.selected = (row, col)
 
     def click(self, x, y):
-        pass
+        if x < self.width and y < self.height:
+            row = y // self.cell_size
+            col = x // self.cell_size
+            return (row, col)
+        else:
+            return None
 
     def clear(self):
-        pass
+        if self.selected:
+            row, col = self.selected
+            self.board[row][col] = 0
 
     def sketch(self, value):
-        pass
+        if self.selected:
+            row, col = self.selected
+            self.board[row][col] = value
 
     def place_number(self, value):
-        pass
+        if self.selected:
+            row, col = self.selected
+            self.board[row][col] = value
 
     def reset_to_original(self):
-        pass
+        self.board = [[0 for i in range(9)] for i in range(9)]
 
     def is_full(self):
-        pass
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.board[i][j] == 0:
+                    return False
+        return True
 
     def update_board(self):
-        pass
+        for i in range(self.rows):
+            for j in range(self.cols):
+                self.board[i][j] = self.board[i][j]
 
     def find_empty(self):
-        pass
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.board[i][j] == 0:
+                    return (i, j)
+        return None
 
     def check_board(self):
-        pass
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.board[i][j] == 0:
+                    return False
