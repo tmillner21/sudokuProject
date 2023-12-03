@@ -5,10 +5,10 @@ from Board import Board
 
 
 def draw_game_start(screen):
-    pygame.display.set_caption("Play Sudoku")
+    pygame.display.set_caption("Play Sudoku!")
 
     # Initialize fonts.
-    start_title_font = pygame.font.Font(None, 80)
+    start_title_font = pygame.font.Font(None, 70)
     subtext_font = pygame.font.Font(None, 40)
     button_font = pygame.font.Font(None, 60)
 
@@ -44,9 +44,9 @@ def draw_game_start(screen):
     hard_surface.blit(hard_text, (10, 10))
 
     # Initialize button rectangle
-    easy_rectangle = easy_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 70))
-    medium_rectangle = medium_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 170))
-    hard_rectangle = hard_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 270))
+    easy_rectangle = easy_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 100))
+    medium_rectangle = medium_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 200))
+    hard_rectangle = hard_surface.get_rect(center=(WIDTH // 3 + 100, HEIGHT // 3 + 300))
 
     # Draw buttons
     screen.blit(easy_surface, easy_rectangle)
@@ -87,7 +87,7 @@ def main():
 
         draw_board = Board(WIDTH, HEIGHT, screen, removed_cells, difficulty)
 
-        selected_cell = None
+        clock = pygame.time.Clock()
 
         while True:
             for event in pygame.event.get():
@@ -95,9 +95,6 @@ def main():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    x, y = pygame.mouse.get_pos()
-                    draw_board.click(x, y)
 
             screen.fill(BG_COLOR)
             bottom_button_input = draw_board.draw()
@@ -106,6 +103,7 @@ def main():
                 break
 
             pygame.display.update()
+            clock.tick(60)
 
 
 if __name__ == "__main__":

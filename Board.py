@@ -29,6 +29,22 @@ class Board:
                 self.board[i][j] = cell
                 cell.draw()
 
+    def click(self, x, y):
+        if x < self.width and y < self.height:
+            row = int(y // self.cell_size)
+            col = int(x // self.cell_size)
+
+            if self.selected is not None:
+                prev_row, prev_col = self.selected
+                self.board[prev_row][prev_col] = False
+
+            self.selected = (row, col)
+            self.board[row][col].selected = True
+
+            return row, col
+        else:
+            return None
+
     # Draws the lines of the board (hot pink for the box lines and white for the other lines)
     def draw(self):
         self.play_sudoku_board()
@@ -46,6 +62,11 @@ class Board:
 
         for i in range(1, 3):
             pygame.draw.line(self.screen, LINE_COLOR, (SQUARE_SIZE * i, 0), (SQUARE_SIZE * i, HEIGHT), LINE_WIDTH)
+
+        if self.selected is not None:
+            row, col = self.selected
+            cell_rect = pygame.Rect(col*self.cell_size, row*self.cell_size, self.cell_size, self.cell_size)
+            pygame.draw.rect(self.screen, OUTLINE_COLOR, cell_rect, width=7)
 
         # A bottom rectangle so the reset, restart, and exit buttons have a place to be displayed.
         bottom_rect = pygame.Rect(0, HEIGHT - 100, WIDTH, 100)
@@ -87,7 +108,15 @@ class Board:
         while not restart:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Set removed cells based on user choice.
+                    # Outline cell
+                    x, y = pygame.mouse.get_pos()
+                    row, col = y // self.cell_size, x // self.cell_size
+                    self.selected = (row, col)
+                    '''cell_rect = pygame.Rect(col*self.cell_size, row*self.cell_size, self.cell_size, self.cell_size)
+                    pygame.draw.rect(self.screen, OUTLINE_COLOR, cell_rect, width=7)
+                    pygame.display.update()'''
+
+                    # Buttons on the bottom.
                     if reset_rectangle.collidepoint(event.pos):
                         print("reset")
                         return "reset"
@@ -99,26 +128,11 @@ class Board:
                         sys.exit()
 
             pygame.display.update()
+            break
 
 
     def select(self, row, col):
         self.selected = (row, col)
-
-    def click(self, x, y):
-        if x < self.width and y < self.height:
-            row = int(y // self.cell_size)
-            col = int(x // self.cell_size)
-
-            if self.selected is not None:
-                prev_row, prev_col = self.selected
-                self.board[prev_row][prev_col] = False
-
-            self.selected = (row, col)
-            self.board[row][col].selected = True
-
-            return row, col
-        else:
-            return None
 
     def sketch(self, value):
         if self.selected:
