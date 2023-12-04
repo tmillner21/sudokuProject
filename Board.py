@@ -1,5 +1,6 @@
 import pygame
 import sys
+import copy
 from Cell import Cell
 from constants import *
 from sudoku_generator import *
@@ -17,7 +18,8 @@ class Board:
         self.board = [[0 for i in range(9)] for i in range(9)]
         self.rows = len(self.board)
         self.cols = len(self.board[0])
-        self.sudoku_board = generate_sudoku(9, self.removed_cells)
+        self.default_sudoku_board = generate_sudoku(9, self.removed_cells)
+        self.playable_sudoku_board = copy.deepcopy(self.default_sudoku_board)
         self.outline_surface = pygame.Surface((width, height), pygame.SRCALPHA)
         self.outline_surface.fill((0, 0, 0, 0))  # Transparent fill
 
@@ -25,8 +27,14 @@ class Board:
     def play_sudoku_board(self):
         for i in range(0, 9):
             for j in range(0, 9):
-                cell = Cell(self.sudoku_board[i][j], i, j, self.screen)
-                self.board[i][j] = cell.draw(True)
+                if self.default_sudoku_board[i][j] != self.playable_sudoku_board[i][j]:
+                    cell = Cell(self.playable_sudoku_board[i][j], i, j, self.screen, False)
+                    self.board[i][j] = cell
+                    cell.draw(cell.initial)
+                else:
+                    cell = Cell(self.playable_sudoku_board[i][j], i, j, self.screen, True)
+                    self.board[i][j] = cell
+                    cell.draw(cell.initial)
 
     def click(self, x, y, key_number=None):
         if x < self.width and y < self.height:
@@ -101,6 +109,8 @@ class Board:
         self.screen.blit(restart_surface, restart_rectangle)
         self.screen.blit(exit_surface, exit_rectangle)
 
+        pygame.display.update()
+
         restart = False
 
         while not restart:
@@ -114,6 +124,7 @@ class Board:
                     # Buttons on the bottom.
                     if reset_rectangle.collidepoint(event.pos):
                         print("reset")
+                        self.playable_sudoku_board = copy.deepcopy(self.default_sudoku_board)
                         return "reset"
                     elif restart_rectangle.collidepoint(event.pos):
                         print("restart")
@@ -130,11 +141,11 @@ class Board:
                         # Convert the pygame key to the corresponding number
                         number = int(event.unicode) if event.unicode else None
                         print(number)
-                        #cell = Cell(self.sudoku_board[row][col], row, col, self.screen)
-                        #self.board[row][col] = cell.draw(False)
-                        self.sudoku_board[row][col] = number
-                        print(self.sudoku_board)
-                        if 0 not in self.sudoku_board:
+
+                        self.playable_sudoku_board[row][col] = number
+                        print(self.playable_sudoku_board)
+
+                        if 0 not in self.playable_sudoku_board:
                             print("end") # end screen code here, and check if the board was filled in correctly
 
             pygame.display.update()
@@ -153,9 +164,6 @@ class Board:
         if self.selected:
             row, col = self.selected
             self[row][col].set_cell_value(value)
-
-    def reset_to_original(self):
-        self.play_sudoku_board()
 
     def is_full(self):
         for i in range(self.rows):

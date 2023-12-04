@@ -80,8 +80,11 @@ def draw_game_start(screen):
 def main():
     pygame.init()
 
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    screen.fill(BG_COLOR)
+
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         removed_cells, difficulty = draw_game_start(screen)
 
@@ -91,12 +94,11 @@ def main():
 
         while True:
             for event in pygame.event.get():
-                print(event)  # Add this line to check if any events are being registered
+                print(event)  # Add this line to check if events are being registered
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-            screen.fill(BG_COLOR)
             bottom_button_input = draw_board.draw()
 
             if bottom_button_input == "restart":
