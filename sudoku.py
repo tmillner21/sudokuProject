@@ -78,9 +78,9 @@ def draw_game_start(screen):
 
 
 def main():
-    while True:
-        pygame.init()
+    pygame.init()
 
+    while True:
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         removed_cells, difficulty = draw_game_start(screen)

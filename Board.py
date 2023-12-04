@@ -26,22 +26,19 @@ class Board:
         for i in range(0, 9):
             for j in range(0, 9):
                 cell = Cell(self.sudoku_board[i][j], i, j, self.screen)
-                self.board[i][j] = cell
-                cell.draw()
+                self.board[i][j] = cell.draw(True)
 
-    def click(self, x, y):
+    def click(self, x, y, key_number=None):
         if x < self.width and y < self.height:
             row = int(y // self.cell_size)
             col = int(x // self.cell_size)
 
-            if self.selected is not None:
-                prev_row, prev_col = self.selected
-                self.board[prev_row][prev_col] = False
-
             self.selected = (row, col)
-            self.board[row][col].selected = True
 
-            return row, col
+            if key_number is not None:
+                self.sketch(key_number)
+            else:
+                return row, col
         else:
             return None
 
@@ -63,6 +60,7 @@ class Board:
         for i in range(1, 3):
             pygame.draw.line(self.screen, LINE_COLOR, (SQUARE_SIZE * i, 0), (SQUARE_SIZE * i, HEIGHT), LINE_WIDTH)
 
+        # Outline cell in light blue
         if self.selected is not None:
             row, col = self.selected
             cell_rect = pygame.Rect(col*self.cell_size, row*self.cell_size, self.cell_size, self.cell_size)
@@ -108,13 +106,10 @@ class Board:
         while not restart:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Outline cell
+                    # Outline cell event handling
                     x, y = pygame.mouse.get_pos()
                     row, col = y // self.cell_size, x // self.cell_size
                     self.selected = (row, col)
-                    '''cell_rect = pygame.Rect(col*self.cell_size, row*self.cell_size, self.cell_size, self.cell_size)
-                    pygame.draw.rect(self.screen, OUTLINE_COLOR, cell_rect, width=7)
-                    pygame.display.update()'''
 
                     # Buttons on the bottom.
                     if reset_rectangle.collidepoint(event.pos):
@@ -126,6 +121,21 @@ class Board:
                     elif exit_rectangle.collidepoint(event.pos):
                         print("exit")
                         sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    x, y = pygame.mouse.get_pos()
+                    row, col = int(y // self.cell_size), int(x // self.cell_size)
+
+                    if event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]:
+                        # Convert the pygame key to the corresponding number
+                        number = int(event.unicode) if event.unicode else None
+                        print(number)
+                        #cell = Cell(self.sudoku_board[row][col], row, col, self.screen)
+                        #self.board[row][col] = cell.draw(False)
+                        self.sudoku_board[row][col] = number
+                        print(self.sudoku_board)
+                        if 0 not in self.sudoku_board:
+                            print("end") # end screen code here, and check if the board was filled in correctly
 
             pygame.display.update()
             break
@@ -142,7 +152,7 @@ class Board:
     def place_number(self, value):
         if self.selected:
             row, col = self.selected
-            self.board[row][col].place_number(value)
+            self[row][col].set_cell_value(value)
 
     def reset_to_original(self):
         self.play_sudoku_board()

@@ -244,11 +244,3 @@ def generate_sudoku(size, removed):
     print(board)
     return board
 
-
-"""def main():
-    sudoku = SudokuGenerator(9,0)
-    sudoku.print_board()
-
-if __name__ == "__main__":
-    main()
-"""
