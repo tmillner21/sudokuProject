@@ -1,4 +1,5 @@
 import math,random
+import copy
 
 """
 This was adapted from a GeeksforGeeks article "Program for Sudoku Generator" by Aarti_Rathi and Ankur Trisal
@@ -239,8 +240,10 @@ def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
     board = sudoku.get_board()
+    solved_board = copy.deepcopy(board)
     sudoku.remove_cells()
     board = sudoku.get_board()
+    print(solved_board)
     print(board)
-    return board
+    return (board, solved_board)
 

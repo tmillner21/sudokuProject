@@ -1,8 +1,8 @@
 import pygame
-import time
 from constants import *
 
 
+# Cell class.
 class Cell:
     def __init__(self, value, row, col, screen, initial):
         self.value = value
@@ -15,12 +15,7 @@ class Cell:
         self.rect = pygame.Rect(self.col * self.cell_size, self.row * self.cell_size, self.cell_size, self.cell_size)
         self.initial = initial
 
-    def set_cell_value(self, value):
-        self.value = value
-
-    def set_sketched_value(self, value):
-        self.sketched_value = value
-
+    # Draws the cell and the number inside it, the color of the number depends on the Boolean value passed into the function.
     def draw(self, is_initial):
 
         font = pygame.font.Font(None, 36)
